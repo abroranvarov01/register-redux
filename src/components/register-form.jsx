@@ -2,24 +2,31 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { createUser } from "../redux/reducer/user-reducer";
-import { useLoginUserMutation } from "../redux/service/user";
+import {
+  useLoginUserMutation,
+  useRegisterUserMutation,
+} from "../redux/service/user";
 import { useNavigate } from "react-router-dom";
-import { useRegisterUserMutation } from "../redux/service/user";
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, Typography } from "@mui/material"; // Импортируем Typography для вывода сообщений
 import { Stack } from "@mui/system";
 
 const RegisterForm = () => {
   const { register, handleSubmit, reset } = useForm();
   const dispatch = useDispatch();
-  const [loginUser, { isLoading, isError }] = useLoginUserMutation();
-  const [registerUser] = useRegisterUserMutation();
+  const [loginUser] = useLoginUserMutation();
+  const [registerUser, { isLoading, isError, error }] =
+    useRegisterUserMutation();
   const navigate = useNavigate();
 
-  const submit = (data) => {
-    reset();
-    const res = registerUser(data).unwrap();
-    dispatch(createUser(res));
-    navigate("/home", { replace: true });
+  const submit = async (data) => {
+    try {
+      const res = await registerUser(data).unwrap();
+      dispatch(createUser(res));
+      reset();
+      navigate("/home", { replace: true });
+    } catch (err) {
+      console.error("Failed to register: ", err);
+    }
   };
 
   return (
@@ -47,7 +54,9 @@ const RegisterForm = () => {
           Register
         </Button>
         {isError && (
-          <p style={{ color: "red" }}>Registration failed. Please try again.</p>
+          <Typography color="error" variant="body2">
+            Registration failed: {error?.data?.message || "Please try again."}
+          </Typography>
         )}
       </form>
     </Stack>

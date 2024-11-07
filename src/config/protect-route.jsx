@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 const ProtectedRoute = ({ element: Component }) => {
   const { accessToken } = useSelector((state) => state.user);
-  return accessToken ? <Component /> : <Navigate to="/login" replace />;
+  return accessToken ? <Component /> : <Navigate to="/" replace />;
 };
 
 export default ProtectedRoute;

@@ -10,9 +10,11 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>
-        <Route index element={<Login />} />
+        <Route index element={<Login />} /> {/* Стартовая страница / */}
         <Route path="register" element={<Register />} />{" "}
+        {/* Страница регистрации */}
         <Route path="home" element={<ProtectedRoute element={Home} />} />{" "}
+        {/* Защищенная страница Home */}
       </Route>
     </Routes>
   );
